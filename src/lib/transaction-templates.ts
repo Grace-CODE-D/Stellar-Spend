@@ -7,8 +7,11 @@ export interface TransactionTemplate {
   currency: string;
   beneficiaryId?: string;
   feeMethod: 'XLM' | 'USDC';
+  category: string;
+  usageCount: number;
   createdAt: number;
   lastUsed?: number;
+  note?: string;
 }
 
 export class TemplateStorage {
@@ -17,6 +20,8 @@ export class TemplateStorage {
   static createTemplate(template: Omit<TransactionTemplate, 'id' | 'createdAt'>): TransactionTemplate {
     const id = crypto.randomUUID();
     const saved: TransactionTemplate = {
+      category: 'General',
+      usageCount: 0,
       ...template,
       id,
       createdAt: Date.now(),
@@ -58,7 +63,11 @@ export class TemplateStorage {
   }
 
   static recordUsage(id: string): void {
-    this.updateTemplate(id, { lastUsed: Date.now() });
+    const t = this.getTemplate(id);
+    this.updateTemplate(id, {
+      lastUsed: Date.now(),
+      usageCount: (t?.usageCount ?? 0) + 1,
+    });
   }
 
   static getRecentTemplates(limit: number = 5): TransactionTemplate[] {

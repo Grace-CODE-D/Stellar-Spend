@@ -5,6 +5,7 @@ import { validateAmount, validateAccountNumber, isValidQuote, validateEvmAddress
 import { buildQuote, calculateBridgeAmount } from "@/lib/offramp/utils/quote-fetcher";
 import { getCurrencyFlag } from "@/lib/currency-flags";
 import { Skeleton } from "@/components/ui/Skeleton";
+import { Label } from "@/components/ui/Label";
 import { FormCardSkeleton } from "@/components/skeletons";
 import { BankAccountInput, type BankMode } from "@/components/BankAccountInput";
 import { QuoteComparison, type ProviderQuote } from "@/components/QuoteComparison";
@@ -471,30 +472,8 @@ function getCtaDisabled(state: CtaState): boolean {
 }
 
 export function FormCard({
-  amount,
-  currency,
-  bank,
-  accountNumber,
-  accountName,
-  feeMethod,
-  currencies,
-  banks,
-  feeOptions,
-  isLoadingCurrencies,
-  isLoadingBanks,
-  isLoadingQuote,
-  isLoadingFees,
-  isVerifyingAccount,
-  isInitialLoading,
-  quoteSuffix,
   isConnected,
-  isConnecting,
-  onAmountChange,
-  onCurrencyChange,
-  onBankChange,
-  onAccountNumberChange,
-  onFeeMethodChange,
-  onSubmit,
+  onConnect,
 }: FormCardProps) {
   const [amount, setAmount] = useState("");
   const [feeMethod, setFeeMethod] = useState<FeeMethod>("USDC");
@@ -753,7 +732,7 @@ export function FormCard({
     !accountName;
 
   return (
-    <div className="flex flex-col gap-6" onKeyDown={handleKeyDown}>
+    <section className="flex flex-col gap-6" onKeyDown={handleKeyDown}>
       <div className="bg-[#111111] border border-[#333333] p-6 flex flex-col gap-6">
         <InputField
           label="Amount (USDC)"
@@ -835,36 +814,8 @@ export function FormCard({
           />
         </div>
 
-        {/* Bank */}
-        <div className="flex flex-col gap-1.5">
-          <Label htmlFor="bank">Bank / Institution</Label>
-          {isLoadingBanks ? (
-            <Skeleton width="100%" height={42} aria-label="Loading bank options…" />
-          ) : (
-            <select
-              id="bank"
-              aria-label="BANK"
-              value={bank}
-              onChange={(e) => onBankChange(e.target.value)}
-              disabled={!isConnected || !currency}
-              className={cn(
-                "w-full appearance-none bg-bg border border-line px-3 py-2.5 text-sm",
-                "focus:outline-none focus-visible:ring-1 focus-visible:ring-accent focus:border-accent",
-                "disabled:opacity-40 disabled:cursor-not-allowed transition-colors duration-150",
-                bank ? "text-text" : "text-[#444444]"
-              )}
-            >
-              <option value="" disabled>{currency ? "Select bank..." : "Select currency first"}</option>
-              {banks.map((b) => (
-                <option key={b.value} value={b.value}>{b.label}</option>
-              ))}
-            </select>
-          )}
-        </div>
-      </div>
-
-      {/* Account number */}
-      <BankAccountInput
+        {/* Account number */}
+        <BankAccountInput
         mode={bankMode}
         onModeChange={setBankMode}
         accountNumber={accountNumber}
@@ -904,26 +855,10 @@ export function FormCard({
               : "bg-[#222222] text-[#555555] cursor-not-allowed border border-[#333333]",
             (ctaState === "connecting" || ctaState === "submitting") && "animate-pulse"
           )}
-        </div>
+        >
+          {getCtaLabel(ctaState)}
+        </button>
       </div>
-
-      {/* CTA */}
-      <button
-        type="button"
-        onClick={onSubmit}
-        disabled={ctaDisabled}
-        aria-label={ctaLabel}
-        className={cn(
-          "w-full py-4 text-xs font-bold tracking-[0.2em] transition-all duration-200",
-          "focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-panel",
-          !ctaDisabled
-            ? "bg-accent text-black hover:bg-[#d4b982]"
-            : "bg-[#222222] text-[#555555] cursor-not-allowed border border-line",
-          isConnecting && "animate-pulse"
-        )}
-      >
-        {ctaLabel}
-      </button>
     </section>
   );
 }

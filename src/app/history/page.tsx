@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
 import type { Transaction } from "@/lib/transaction-storage";
 import { useStellarWallet } from "@/hooks/useStellarWallet";
 import { Header } from "@/components/Header";
@@ -244,7 +245,7 @@ export default function HistoryPage() {
                 : "Connect your wallet to view transaction history"}
             </p>
           </div>
-          <a
+          <Link
             href="/"
             className={cn(
               "self-start sm:self-auto text-[10px] tracking-widest uppercase text-[#c9a962] border border-[#c9a962] px-4 py-2 min-h-[44px] flex items-center",
@@ -253,7 +254,7 @@ export default function HistoryPage() {
             )}
           >
             ← Back to Dashboard
-          </a>
+          </Link>
         </div>
 
         {!isConnected ? (

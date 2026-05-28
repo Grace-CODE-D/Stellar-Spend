@@ -5,6 +5,7 @@ import { ToastProvider } from "@/contexts/ToastContext";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import { ToastContainer } from "@/components/Toast";
 import ServiceWorkerRegistration from "@/components/ServiceWorkerRegistration";
+import PWAInstallPrompt from "@/components/PWAInstallPrompt";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 
 const ibmPlexMono = IBM_Plex_Mono({
@@ -52,6 +53,8 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
               {children}
             </ErrorBoundary>
             <ToastContainer />
+            <ServiceWorkerRegistration />
+            <PWAInstallPrompt />
           </ToastProvider>
         </ThemeProvider>
       </body>
